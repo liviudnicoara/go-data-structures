@@ -3,7 +3,10 @@ package main
 // Problem Statement:
 // Given an undirected graph, implement DFS to print all vertices in depth-first order.
 
-import "fmt"
+import (
+	"container/list"
+	"fmt"
+)
 
 type Graph struct {
 	Nodes map[int][]int
@@ -27,6 +30,25 @@ func dfs(graph Graph, start int, visited map[int]bool) {
 	}
 }
 
+func bfs(graph Graph, start int, visited map[int]bool) {
+	queue := list.New()
+	queue.PushBack(start)
+	visited[start] = true
+
+	for queue.Len() > 0 {
+		node := queue.Front().Value.(int)
+		fmt.Print(node, " ")
+		queue.Remove(queue.Front())
+
+		for _, neighbor := range graph.Nodes[node] {
+			if !visited[neighbor] {
+				visited[neighbor] = true
+				queue.PushBack(neighbor)
+			}
+		}
+	}
+}
+
 func main() {
 	graph := Graph{
 		Nodes: make(map[int][]int),
@@ -44,4 +66,10 @@ func main() {
 
 	fmt.Println("DFS Traversal:")
 	dfs(graph, startNode, visited)
+
+	startNode = 0
+	visited = make(map[int]bool)
+
+	fmt.Println("BFS Traversal:")
+	bfs(graph, startNode, visited)
 }
